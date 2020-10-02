@@ -7,6 +7,4 @@ type VersionCheckRequest struct {
 	OS      string
 	DB      string
 	Token   string
-	Proof   string
 }
-
