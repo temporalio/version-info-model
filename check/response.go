@@ -21,7 +21,7 @@ type ReleaseInfo struct {
 	Notes       string `json:"notes"`
 }
 
-// Alert contains message and severity of a given update.
+// Alert contains a message about given update and its importance.
 type Alert struct {
 	Message  string   `json:"message"`
 	Severity Severity `json:"severity"`
