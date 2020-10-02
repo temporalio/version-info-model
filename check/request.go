@@ -8,5 +8,5 @@ type VersionCheckRequest struct {
 	OS        string
 	DB        string
 	ClusterID string
-	Token     string
+	Timestamp int64
 }
