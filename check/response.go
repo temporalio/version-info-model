@@ -6,9 +6,9 @@ type Severity int
 const (
 	// SeverityUnspecified means that severity hasn't been set or is unknown.
 	SeverityUnspecified Severity = iota
-	// SeverityHigh means that there are important updates available for your version and they should be applied ASAP.
+	// SeverityHigh means that there is an important update available and it should be applied ASAP.
 	SeverityHigh
-	// SeverityMedium means that there are important updates available however neither of them is urgent.
+	// SeverityMedium means that there is an important update available however it is not urgent.
 	SeverityMedium
 	// SeverityLow means that no major changes are available and update is not required.
 	SeverityLow
@@ -27,7 +27,7 @@ type Alert struct {
 	Severity Severity `json:"severity"`
 }
 
-// VersionCheckResponse contains recommendation about the best version of product and
+// VersionCheckResponse contains recommendation about the best version of product to use and alerts for the current version.
 type VersionCheckResponse struct {
 	Current     ReleaseInfo `json:"current"`
 	Recommended ReleaseInfo `json:"recommended"`
