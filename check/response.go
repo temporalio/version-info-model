@@ -27,9 +27,10 @@ type Alert struct {
 	Severity Severity `json:"severity"`
 }
 
-// VersionCheckResponse contains recommendation about the best version of product to use and alerts for the current version.
+// VersionCheckResponse contains recommendation about the best version of the product, any alerts for the current version as well as upgrade instructions.
 type VersionCheckResponse struct {
-	Current     ReleaseInfo `json:"current"`
-	Recommended ReleaseInfo `json:"recommended"`
-	Alerts      []Alert     `json:"alerts"`
+	Current      ReleaseInfo `json:"current"`
+	Recommended  ReleaseInfo `json:"recommended"`
+	Instructions string      `json:"instructions"`
+	Alerts       []Alert     `json:"alerts"`
 }
