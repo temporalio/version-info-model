@@ -3,6 +3,7 @@ package check
 import (
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,6 +25,10 @@ func NewCaller() Caller {
 }
 
 func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error) {
+	err := validate(r)
+	if err != nil {
+		return nil, err
+	}
 	u := vc.getUrl(r)
 	tr := &http.Transport{
 		DisableKeepAlives:   true,
@@ -51,6 +56,13 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 		return nil, err
 	}
 	return versionCheck, nil
+}
+
+func validate(r *VersionCheckRequest) error {
+	if r.Product == "" || r.Version == "" || r.ClusterID == "" || r.DB == "" || r.OS == "" || r.Arch == "" || r.Timestamp == 0 {
+		return errors.New("invalid request: missing required fields")
+	}
+	return nil
 }
 
 func (vc *callerImpl) getUrl(r *VersionCheckRequest) *url.URL {
