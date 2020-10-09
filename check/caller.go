@@ -19,7 +19,7 @@ type callerImpl struct {
 	host   string
 }
 
-func NewCaller() *callerImpl {
+func NewCaller() Caller {
 	return &callerImpl{"https", "version-info.temporal.io"}
 }
 
