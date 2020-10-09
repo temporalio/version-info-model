@@ -53,7 +53,7 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 	return versionCheck, nil
 }
 
-func (vc *callerImpl) getUrl(r *VersionCheckRequest) url.URL {
+func (vc *callerImpl) getUrl(r *VersionCheckRequest) *url.URL {
 	var u url.URL
 	v := u.Query()
 	v.Set("product", r.Product)
@@ -67,5 +67,5 @@ func (vc *callerImpl) getUrl(r *VersionCheckRequest) url.URL {
 	u.Host = vc.host
 	u.Path = fmt.Sprintf("check")
 	u.RawQuery = v.Encode()
-	return u
+	return &u
 }
