@@ -24,19 +24,7 @@ func NewCaller() Caller {
 }
 
 func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error) {
-	var u url.URL
-	v := u.Query()
-	v.Set("product", r.Product)
-	v.Set("version", r.Version)
-	v.Set("arch", r.Arch)
-	v.Set("os", r.OS)
-	v.Set("db", r.DB)
-	v.Set("cluster", r.ClusterID)
-	v.Set("timestamp", strconv.FormatInt(r.Timestamp, 10))
-	u.Scheme = vc.scheme
-	u.Host = vc.host
-	u.Path = fmt.Sprintf("check")
-	u.RawQuery = v.Encode()
+	u := vc.getUrl(r)
 	tr := &http.Transport{
 		DisableKeepAlives:   true,
 		MaxIdleConnsPerHost: -1,
@@ -63,4 +51,21 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 		return nil, err
 	}
 	return versionCheck, nil
+}
+
+func (vc *callerImpl) getUrl(r *VersionCheckRequest) url.URL {
+	var u url.URL
+	v := u.Query()
+	v.Set("product", r.Product)
+	v.Set("version", r.Version)
+	v.Set("arch", r.Arch)
+	v.Set("os", r.OS)
+	v.Set("db", r.DB)
+	v.Set("cluster", r.ClusterID)
+	v.Set("timestamp", strconv.FormatInt(r.Timestamp, 10))
+	u.Scheme = vc.scheme
+	u.Host = vc.host
+	u.Path = fmt.Sprintf("check")
+	u.RawQuery = v.Encode()
+	return u
 }
