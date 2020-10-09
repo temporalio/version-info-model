@@ -1,7 +1,7 @@
 package check
 
 // Severity defines importance of the upgrade from the current version to the recommended version.
-type Severity int
+type Severity int32
 
 const (
 	// SeverityUnspecified means that severity hasn't been set or is unknown.
