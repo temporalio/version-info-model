@@ -17,7 +17,7 @@ const (
 // ReleaseInfo contains information about a specific version of the product.
 type ReleaseInfo struct {
 	Version     string `json:"version"`
-	ReleaseDate int64  `json:"release_date"`
+	ReleaseTime int64  `json:"release_time"`
 	Notes       string `json:"notes"`
 }
 
