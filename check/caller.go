@@ -25,7 +25,7 @@ func NewCaller() Caller {
 }
 
 func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error) {
-	err := validate(r)
+	err := validateRequest(r)
 	if err != nil {
 		return nil, err
 	}
@@ -48,17 +48,30 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 	if err != nil {
 		return nil, err
 	}
+	if resp.StatusCode != 200 {
+		return nil, errors.New(fmt.Sprintf("bad response code %v", resp.StatusCode))
+	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	versionCheck := &VersionCheckResponse{}
-	err = json.Unmarshal(body, versionCheck)
+	versionCheckResponse := &VersionCheckResponse{}
+	err = json.Unmarshal(body, versionCheckResponse)
 	if err != nil {
 		return nil, err
 	}
-	return versionCheck, nil
+	err = validateResponse(versionCheckResponse)
+	if err != nil {
+		return nil, err
+	}
+	return versionCheckResponse, nil
 }
 
-func validate(r *VersionCheckRequest) error {
+func validateResponse(r *VersionCheckResponse) error {
+	if r.Current.Version == "" || r.Recommended.Version == "" {
+		return errors.New("invalid response: missing current or recommended version")
+	}
+	return nil
+}
+func validateRequest(r *VersionCheckRequest) error {
 	if r.Product == "" || r.Version == "" || r.ClusterID == "" || r.DB == "" || r.OS == "" || r.Arch == "" || r.Timestamp == 0 {
 		return errors.New("invalid request: missing required fields")
 	}
