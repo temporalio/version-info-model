@@ -1,6 +1,7 @@
 package check
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -8,7 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 )
 
 type Caller interface {
@@ -40,10 +40,15 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 		}
 	}
 	client := &http.Client{Transport: tr}
-	req, err := http.NewRequest("GET", u.String(), nil)
+	reqBody, err := json.Marshal(r)
 	if err != nil {
 		return nil, err
 	}
+	req, err := http.NewRequest("POST", u.String(), bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -75,22 +80,18 @@ func validateRequest(r *VersionCheckRequest) error {
 	if r.Product == "" || r.Version == "" || r.ClusterID == "" || r.DB == "" || r.OS == "" || r.Arch == "" || r.Timestamp == 0 {
 		return errors.New("invalid request: missing required fields")
 	}
+	for _, info := range r.SDKInfo {
+		if info.Name == "" || info.Version == "" {
+			return errors.New("invalid request: missing required fields")
+		}
+	}
 	return nil
 }
 
 func (vc *callerImpl) getUrl(r *VersionCheckRequest) *url.URL {
 	var u url.URL
-	v := u.Query()
-	v.Set("product", r.Product)
-	v.Set("version", r.Version)
-	v.Set("arch", r.Arch)
-	v.Set("os", r.OS)
-	v.Set("db", r.DB)
-	v.Set("cluster", r.ClusterID)
-	v.Set("timestamp", strconv.FormatInt(r.Timestamp, 10))
 	u.Scheme = vc.scheme
 	u.Host = vc.host
 	u.Path = fmt.Sprintf("check")
-	u.RawQuery = v.Encode()
 	return &u
 }
