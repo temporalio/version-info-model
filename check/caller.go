@@ -44,7 +44,7 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequest("POST", u.String(), bytes.NewBuffer(reqBody))
+	req, err := http.NewRequest("POST", u.String(), bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, err
 	}

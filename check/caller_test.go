@@ -57,12 +57,11 @@ func TestPostInfo(t *testing.T) {
 		t.Fatalf("Request failed: %s", err)
 	}
 	caller := &callerImpl{url.Scheme, url.Host}
-	sdkInfo := make([]SDKInfo, 1)
-	sdkInfo[0] = SDKInfo{
+	sdkInfo := []SDKInfo{{
 		Name: "sdk-java",
 		Version: "3.11",
 		TimesSeen: 23,
-	}
+	}}
 	_, err = caller.Call(&VersionCheckRequest{
 		Product:   "server",
 		Version:   "0.1",
