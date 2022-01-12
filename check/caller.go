@@ -71,8 +71,12 @@ func (vc *callerImpl) Call(r *VersionCheckRequest) (*VersionCheckResponse, error
 }
 
 func validateResponse(r *VersionCheckResponse) error {
-	if r.Current.Version == "" || r.Recommended.Version == "" {
-		return errors.New("invalid response: missing current or recommended version")
+	if len(r.Products) == 0 {
+		return errors.New("invalid response: missing product list")
+	}
+	firstProduct := r.Products[0]
+	if firstProduct.Product == "" || firstProduct.Current.Version == "" || firstProduct.Recommended.Version == "" {
+		return errors.New("invalid response: missing product name, current or recommended version")
 	}
 	return nil
 }
