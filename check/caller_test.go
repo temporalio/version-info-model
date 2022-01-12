@@ -2,14 +2,13 @@ package check
 
 import (
 	"encoding/json"
-	"testing"
-	"time"
 	"io/ioutil"
-	"net/url"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"testing"
+	"time"
 )
-
 
 func TestPostInfo(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -34,18 +33,23 @@ func TestPostInfo(t *testing.T) {
 		}
 		// Unmarshalling works
 		res, err := json.Marshal(VersionCheckResponse{
-			Current:      ReleaseInfo {
-				Version: "0.1",
-				ReleaseTime: time.Now().UnixNano(),
-				Notes: "",
+			Products: []ProductVersionReport{
+				ProductVersionReport{
+					Product: "server",
+					Current: ReleaseInfo{
+						Version:     "0.1",
+						ReleaseTime: time.Now().UnixNano(),
+						Notes:       "",
+					},
+					Recommended: ReleaseInfo{
+						Version:     "0.1",
+						ReleaseTime: time.Now().UnixNano(),
+						Notes:       "",
+					},
+					Instructions: "instructions",
+					Alerts:       []Alert{},
+				},
 			},
-			Recommended:  ReleaseInfo {
-				Version: "0.1",
-				ReleaseTime: time.Now().UnixNano(),
-				Notes: "",
-			},
-			Instructions: "instructions",
-			Alerts:       []Alert{},
 		})
 		if err != nil {
 			t.Fatalf("Failed to marshal response %s", err)
@@ -58,9 +62,8 @@ func TestPostInfo(t *testing.T) {
 	}
 	caller := &callerImpl{url.Scheme, url.Host}
 	sdkInfo := []SDKInfo{{
-		Name: "sdk-java",
+		Name:    "sdk-java",
 		Version: "3.11",
-		TimesSeen: 23,
 	}}
 	_, err = caller.Call(&VersionCheckRequest{
 		Product:   "server",

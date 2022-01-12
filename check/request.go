@@ -1,10 +1,9 @@
 package check
 
-// VersionCheckRequest provides basic info about the client and is used to produce VersionCheckResponse.
+// SDKINfo is a tuple of (SDK name, SDK version)
 type SDKInfo struct {
-	Name      string `json:"sdkName"`
-	Version   string `json:"sdkVersion"`
-	TimesSeen int64  `json:"timesSeen"`
+	Name    string `json:"sdkName"`
+	Version string `json:"sdkVersion"`
 }
 
 // VersionCheckRequest provides basic info about the client and is used to produce VersionCheckResponse.
